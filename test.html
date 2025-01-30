@@ -34,25 +34,55 @@
             border-radius: 5px;
         }
 
-        /* Estilos para cada detalle individual */
-        .detalle {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            transform: translateY(100%);
-            transition: transform 0.3s ease-in-out;
-        }
+      
 
-        .detalle.activo {
-            transform: translateY(0);
-        }
+        .detalle {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    transform: translateX(100%); /* Cambio de Y a X */
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    z-index: 1000;
+    opacity: 0;
+}
+
+.detalle.activo {
+    transform: translateX(0); /* Ahora entra desde la derecha */
+    opacity: 1;
+}
+
+/* Transiciones para navegación horizontal */
+.detalle.salida-izquierda {
+    transform: translateX(-100%); /* Sale hacia izquierda */
+    opacity: 0;
+}
+
+.detalle.salida-derecha {
+    transform: translateX(100%); /* Sale hacia derecha */
+    opacity: 0;
+}
+
+.detalle.entrada-izquierda {
+    transform: translateX(100%); /* Entra desde derecha */
+    opacity: 1;
+}
+
+.detalle.entrada-derecha {
+    transform: translateX(-100%); /* Entra desde izquierda */
+    opacity: 1;
+}
+
+
+
+
+
 
         .detalle .cerrar {
             position: absolute;
@@ -74,6 +104,7 @@
         <button class="boton" onclick="abrirDetalle('detalle1')">Botón 1</button>
         <button class="boton" onclick="abrirDetalle('detalle2')">Botón 2</button>
         <button class="boton" onclick="abrirDetalle('detalle3')">Botón 3</button>
+        <button class="boton" onclick="abrirDetalle('detalle4')">Botón 4</button>
     </div>
     
 
@@ -92,6 +123,12 @@
         <p>Contenido del Botón 3</p>
     </div>
 
+     
+    <div class="detalle" id="detalle4" style="background-color: rgb(145, 153, 0);">
+        <button class="cerrar" onclick="cerrarDetalle('detalle4')">Cerrar</button>
+        <p>Contenido del Botón 4</p>
+    </div>
+
 
     <!-- Incluye Hammer.js antes de tu script -->
     <script src='https://hammerjs.github.io/dist/hammer.min.js'></script>
@@ -101,25 +138,50 @@
         let hammerInstances = [];
 
         function abrirDetalle(id) {
-            // Cierra todos los detalles antes de abrir uno nuevo (opcional)
+            limpiarInstancias(); // Destruye instancias anteriores
             document.querySelectorAll('.detalle').forEach(d => d.classList.remove('activo'));
             
             lastScrollPosition = window.scrollY;
             const detalle = document.getElementById(id);
             detalle.classList.add('activo');
             document.body.style.overflow = 'hidden';
-            
-            const hammer = new Hammer(detalle);
-            hammer.get('swipe').set({ direction: Hammer.DIRECTION_VERTICAL }); 
 
+            // Configura Hammer para swipe vertical y horizontal
+            const hammer = new Hammer(detalle);
+            hammer.get('swipe').set({ direction: Hammer.DIRECTION_ALL }); // Detecta todas las direcciones
+
+            // Swipe hacia abajo: Cerrar
             hammer.on('swipedown', () => cerrarDetalle(id));
+            
+            // Swipe izquierda: Siguiente detalle
+            hammer.on('swipeleft', () => navegarDetalle('siguiente', id));
+            
+            // Swipe derecha: Detalle anterior
+            hammer.on('swiperight', () => navegarDetalle('anterior', id));
+
             hammerInstances.push(hammer);
         }
 
+        function navegarDetalle(direccion, currentId) {
+            const detalles = Array.from(document.querySelectorAll('.detalle'));
+            const currentIndex = detalles.findIndex(d => d.id === currentId);
+            let newIndex;
+
+            if (direccion === 'siguiente') {
+                newIndex = (currentIndex + 1) % detalles.length; // Circular al inicio
+            } else {
+                newIndex = (currentIndex - 1 + detalles.length) % detalles.length; // Circular al final
+            }
+
+            const newId = detalles[newIndex].id;
+            abrirDetalle(newId); // Abre el nuevo detalle
+        }
+
         function cerrarDetalle(id) {
-            document.getElementById(id).classList.remove('activo');
+            const detalle = document.getElementById(id);
+            detalle.classList.remove('activo');
             document.body.style.overflow = '';
-            window.scrollTo({ top: lastScrollPosition, behavior: 'auto' }); //
+            window.scrollTo({ top: lastScrollPosition, behavior: 'auto' });
             limpiarInstancias();
         }
 
