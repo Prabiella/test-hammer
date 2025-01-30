@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varios Detalles Independientes</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .botonera {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+            gap: 10px;
+            position: relative;
+        }
+
+        .boton {
+            padding: 15px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        /* Estilos para cada detalle individual */
+        .detalle {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            transform: translateY(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .detalle.activo {
+            transform: translateY(0);
+        }
+
+        .detalle .cerrar {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 20px;
+            background: red;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="botonera">
+        <button class="boton" onclick="abrirDetalle('detalle1')">Botón 1</button>
+        <button class="boton" onclick="abrirDetalle('detalle2')">Botón 2</button>
+        <button class="boton" onclick="abrirDetalle('detalle3')">Botón 3</button>
+    </div>
+
+    <!-- Secciones de detalle individuales -->
+    <div class="detalle" id="detalle1" style="background-color: #3498db;">
+        <button class="cerrar" onclick="cerrarDetalle('detalle1')">Cerrar</button>
+        <p>Contenido del Botón 1</p>
+    </div>
+
+    <div class="detalle" id="detalle2" style="background-color: blue;">
+        <button class="cerrar" onclick="cerrarDetalle('detalle2')">Cerrar</button>
+        <p>Contenido del Botón 2</p>
+    </div>
+
+    <div class="detalle" id="detalle3" style="background-color: aqua;">
+        <button class="cerrar" onclick="cerrarDetalle('detalle3')">Cerrar</button>
+        <p>Contenido del Botón 3</p>
+    </div>
+
+    <!-- Incluimos la librería Hammer.js al final del body -->
+    <script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
+
+    <script>
+        let lastScrollPosition = 0;
+
+        // Variable para almacenar las instancias de Hammer.js
+        let hammerInstances = [];
+
+        function abrirDetalle(id) {
+            lastScrollPosition = window.scrollY; // Guardar la posición actual antes de abrir
+            const detalle = document.getElementById(id);
+            detalle.classList.add('activo');
+            document.body.style.overflow = 'hidden'; // Evita el scroll en el fondo
+            
+            // Inicializar Hammer.js solo una vez para el detalle abierto
+            const hammer = new Hammer(detalle);
+
+            // Añadimos el evento de swipe hacia abajo
+            hammer.on('swipedown', function() {
+                cerrarDetalle(id); // Cerramos el detalle si el swipe es hacia abajo
+            });
+
+            // Guardamos la instancia de Hammer para este detalle
+            hammerInstances.push(hammer);
+        }
+
+        function cerrarDetalle(id) {
+            document.getElementById(id).classList.remove('activo');
+            document.body.style.overflow = ''; // Reactiva el scroll
+            window.scrollTo(0, lastScrollPosition); // Devuelve la posición guardada
+        }
+
+        // Limpiar instancias de Hammer cuando se cierre un detalle
+        function limpiarInstancias() {
+            hammerInstances.forEach(instance => {
+                instance.destroy(); // Destruye las instancias previas de Hammer
+            });
+            hammerInstances = []; // Reiniciamos el arreglo de instancias
+        }
+    </script>
+
+</body>
+</html>
