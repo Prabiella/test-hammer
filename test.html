@@ -75,64 +75,60 @@
         <button class="boton" onclick="abrirDetalle('detalle2')">Botón 2</button>
         <button class="boton" onclick="abrirDetalle('detalle3')">Botón 3</button>
     </div>
+    
 
-    <!-- Secciones de detalle individuales -->
     <div class="detalle" id="detalle1" style="background-color: #3498db;">
         <button class="cerrar" onclick="cerrarDetalle('detalle1')">Cerrar</button>
         <p>Contenido del Botón 1</p>
     </div>
-
+    
     <div class="detalle" id="detalle2" style="background-color: blue;">
         <button class="cerrar" onclick="cerrarDetalle('detalle2')">Cerrar</button>
         <p>Contenido del Botón 2</p>
     </div>
-
+    
     <div class="detalle" id="detalle3" style="background-color: aqua;">
         <button class="cerrar" onclick="cerrarDetalle('detalle3')">Cerrar</button>
         <p>Contenido del Botón 3</p>
     </div>
 
-    <!-- Incluimos la librería Hammer.js al final del body -->
-    <script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
+
+    <!-- Incluye Hammer.js antes de tu script -->
+    <script src='https://hammerjs.github.io/dist/hammer.min.js'></script>
 
     <script>
         let lastScrollPosition = 0;
-
-        // Variable para almacenar las instancias de Hammer.js
         let hammerInstances = [];
 
         function abrirDetalle(id) {
-            lastScrollPosition = window.scrollY; // Guardar la posición actual antes de abrir
+            // Cierra todos los detalles antes de abrir uno nuevo (opcional)
+            document.querySelectorAll('.detalle').forEach(d => d.classList.remove('activo'));
+            
+            lastScrollPosition = window.scrollY;
             const detalle = document.getElementById(id);
             detalle.classList.add('activo');
-            document.body.style.overflow = 'hidden'; // Evita el scroll en el fondo
+            document.body.style.overflow = 'hidden';
             
-            // Inicializar Hammer.js solo una vez para el detalle abierto
             const hammer = new Hammer(detalle);
+            hammer.get('swipe').set({ direction: Hammer.DIRECTION_VERTICAL }); 
 
-            // Añadimos el evento de swipe hacia abajo
-            hammer.on('swipedown', function() {
-                cerrarDetalle(id); // Cerramos el detalle si el swipe es hacia abajo
-            });
-
-            // Guardamos la instancia de Hammer para este detalle
+            hammer.on('swipedown', () => cerrarDetalle(id));
             hammerInstances.push(hammer);
         }
 
         function cerrarDetalle(id) {
             document.getElementById(id).classList.remove('activo');
-            document.body.style.overflow = ''; // Reactiva el scroll
-            window.scrollTo(0, lastScrollPosition); // Devuelve la posición guardada
+            document.body.style.overflow = '';
+            window.scrollTo({ top: lastScrollPosition, behavior: 'auto' }); //
+            limpiarInstancias();
         }
 
-        // Limpiar instancias de Hammer cuando se cierre un detalle
         function limpiarInstancias() {
-            hammerInstances.forEach(instance => {
-                instance.destroy(); // Destruye las instancias previas de Hammer
-            });
-            hammerInstances = []; // Reiniciamos el arreglo de instancias
+            hammerInstances.forEach(instance => instance.destroy());
+            hammerInstances = [];
         }
     </script>
-
+</body>
+</html>
 </body>
 </html>
