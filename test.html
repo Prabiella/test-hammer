@@ -58,31 +58,6 @@
     opacity: 1;
 }
 
-/* Transiciones para navegación horizontal */
-.detalle.salida-izquierda {
-    transform: translateX(-100%); /* Sale hacia izquierda */
-    opacity: 0;
-}
-
-.detalle.salida-derecha {
-    transform: translateX(100%); /* Sale hacia derecha */
-    opacity: 0;
-}
-
-.detalle.entrada-izquierda {
-    transform: translateX(100%); /* Entra desde derecha */
-    opacity: 1;
-}
-
-.detalle.entrada-derecha {
-    transform: translateX(-100%); /* Entra desde izquierda */
-    opacity: 1;
-}
-
-
-
-
-
 
         .detalle .cerrar {
             position: absolute;
@@ -96,6 +71,77 @@
             cursor: pointer;
             border-radius: 5px;
         }
+
+
+
+
+  /* Contenedor de desplazamiento horizontal */
+  .contenedor-productos {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto; /* Habilita el desplazamiento horizontal */
+            scroll-snap-type: x mandatory; /* Ajuste suave al deslizar */
+            padding-bottom: 10px;
+            width: 100%;
+        }
+
+        .contenedor-productos::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .contenedor-productos::-webkit-scrollbar-thumb {
+            background: #3498db;
+            border-radius: 10px;
+        }
+
+        /* Ficha de producto */
+        .producto {
+            flex: 0 0 250px; /* Ancho fijo para cada ficha */
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            background: white;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            scroll-snap-align: start;
+        }
+
+        .producto h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .producto p {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .producto input {
+            transform: scale(1.2);
+            margin-right: 5px;
+        }
+
+        /* Diseño adaptable */
+        @media (max-width: 768px) {
+            .contenedor-productos {
+                width: 90vw; /* Reduce el ancho en móviles */
+            }
+
+            .producto {
+                flex: 0 0 80%; /* Muestra menos fichas a la vez */
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
     </style>
 </head>
 <body>
@@ -111,6 +157,36 @@
     <div class="detalle" id="detalle1" style="background-color: #3498db;">
         <button class="cerrar" onclick="cerrarDetalle('detalle1')">Cerrar</button>
         <p>Contenido del Botón 1</p>
+
+        <h2>Productos Disponibles</h2>
+
+    <div class="contenedor-productos">
+        <div class="producto">
+            <h3>Producto 1</h3>
+            <p>Precio: $10.99</p>
+            <label><input type="checkbox"> Seleccionar</label>
+        </div>
+        <div class="producto">
+            <h3>Producto 2</h3>
+            <p>Precio: $15.50</p>
+            <label><input type="checkbox"> Seleccionar</label>
+        </div>
+        <div class="producto">
+            <h3>Producto 3</h3>
+            <p>Precio: $20.75</p>
+            <label><input type="checkbox"> Seleccionar</label>
+        </div>
+        <div class="producto">
+            <h3>Producto 4</h3>
+            <p>Precio: $8.99</p>
+            <label><input type="checkbox"> Seleccionar</label>
+        </div>
+        <div class="producto">
+            <h3>Producto 5</h3>
+            <p>Precio: $12.30</p>
+            <label><input type="checkbox"> Seleccionar</label>
+        </div>
+    </div>
     </div>
     
     <div class="detalle" id="detalle2" style="background-color: blue;">
