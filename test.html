@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Varios Detalles Independientes</title>
+    <title>Detalles con Navegación</title>
     <style>
         * {
             box-sizing: border-box;
@@ -16,13 +16,32 @@
             overflow-x: hidden;
         }
 
+         /* Fondo oscuro animado */
+         body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            pointer-events: none;
+        }
+
+        body.detalle-activo::after {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
         .botonera {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             padding: 20px;
             gap: 10px;
-            position: relative;
         }
 
         .boton {
@@ -34,30 +53,28 @@
             border-radius: 5px;
         }
 
-      
-
+        /* Estilos para la ventana de detalle */
         .detalle {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    background: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    transform: translateX(100%); /* Cambio de Y a X */
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-    z-index: 1000;
-    opacity: 0;
-}
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            z-index: 1000;
+            opacity: 0;
+        }
 
-.detalle.activo {
-    transform: translateX(0); /* Ahora entra desde la derecha */
-    opacity: 1;
-}
-
+        .detalle.activo {
+            transform: translateX(0);
+            opacity: 1;
+        }
 
         .detalle .cerrar {
             position: absolute;
@@ -72,11 +89,32 @@
             border-radius: 5px;
         }
 
+        /* Flechas de navegación */
+        .flecha {
+            position: absolute;
+            top: 90%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            user-select: none;
+        }
+
+        .flecha.izquierda {
+            left: 20px;
+        }
+
+        .flecha.derecha {
+            right: 20px;
+        }
 
 
 
-  /* Contenedor de desplazamiento horizontal */
-  .contenedor-productos {
+/* Contenedor de desplazamiento horizontal */
+.contenedor-productos {
             display: flex;
             gap: 15px;
             overflow-x: auto; /* Habilita el desplazamiento horizontal */
@@ -132,16 +170,6 @@
             }
         }
 
-
-
-
-
-
-
-
-
-
-
     </style>
 </head>
 <body>
@@ -153,68 +181,70 @@
         <button class="boton" onclick="abrirDetalle('detalle4')">Botón 4</button>
     </div>
     
-
+    <!-- Ventanas de detalle -->
     <div class="detalle" id="detalle1" style="background-color: #3498db;">
         <button class="cerrar" onclick="cerrarDetalle('detalle1')">Cerrar</button>
         <p>Contenido del Botón 1</p>
-
         <h2>Productos Disponibles</h2>
 
-    <div class="contenedor-productos">
-        <div class="producto">
-            <h3>Producto 1</h3>
-            <p>Precio: $10.99</p>
-            <label><input type="checkbox"> Seleccionar</label>
+        <div class="contenedor-productos">
+            <div class="producto">
+                <h3>Producto 1</h3>
+                <p>Precio: $10.99</p>
+                <label><input type="checkbox"> Seleccionar</label>
+            </div>
+            <div class="producto">
+                <h3>Producto 2</h3>
+                <p>Precio: $15.50</p>
+                <label><input type="checkbox"> Seleccionar</label>
+            </div>
+            <div class="producto">
+                <h3>Producto 3</h3>
+                <p>Precio: $20.75</p>
+                <label><input type="checkbox"> Seleccionar</label>
+            </div>
+            <div class="producto">
+                <h3>Producto 4</h3>
+                <p>Precio: $8.99</p>
+                <label><input type="checkbox"> Seleccionar</label>
+            </div>
+            <div class="producto">
+                <h3>Producto 5</h3>
+                <p>Precio: $12.30</p>
+                <label><input type="checkbox"> Seleccionar</label>
+            </div>
         </div>
-        <div class="producto">
-            <h3>Producto 2</h3>
-            <p>Precio: $15.50</p>
-            <label><input type="checkbox"> Seleccionar</label>
-        </div>
-        <div class="producto">
-            <h3>Producto 3</h3>
-            <p>Precio: $20.75</p>
-            <label><input type="checkbox"> Seleccionar</label>
-        </div>
-        <div class="producto">
-            <h3>Producto 4</h3>
-            <p>Precio: $8.99</p>
-            <label><input type="checkbox"> Seleccionar</label>
-        </div>
-        <div class="producto">
-            <h3>Producto 5</h3>
-            <p>Precio: $12.30</p>
-            <label><input type="checkbox"> Seleccionar</label>
-        </div>
-    </div>
+        <span class="flecha izquierda" onclick="navegarDetalle('anterior', 'detalle1')">◀</span>
+        <span class="flecha derecha" onclick="navegarDetalle('siguiente', 'detalle1')">▶</span>
     </div>
     
     <div class="detalle" id="detalle2" style="background-color: blue;">
         <button class="cerrar" onclick="cerrarDetalle('detalle2')">Cerrar</button>
         <p>Contenido del Botón 2</p>
+        <span class="flecha izquierda" onclick="navegarDetalle('anterior', 'detalle2')">◀</span>
+        <span class="flecha derecha" onclick="navegarDetalle('siguiente', 'detalle2')">▶</span>
     </div>
     
     <div class="detalle" id="detalle3" style="background-color: aqua;">
         <button class="cerrar" onclick="cerrarDetalle('detalle3')">Cerrar</button>
         <p>Contenido del Botón 3</p>
+        <span class="flecha izquierda" onclick="navegarDetalle('anterior', 'detalle3')">◀</span>
+        <span class="flecha derecha" onclick="navegarDetalle('siguiente', 'detalle3')">▶</span>
     </div>
 
-     
     <div class="detalle" id="detalle4" style="background-color: rgb(145, 153, 0);">
         <button class="cerrar" onclick="cerrarDetalle('detalle4')">Cerrar</button>
         <p>Contenido del Botón 4</p>
+        <span class="flecha izquierda" onclick="navegarDetalle('anterior', 'detalle4')">◀</span>
+        <span class="flecha derecha" onclick="navegarDetalle('siguiente', 'detalle4')">▶</span>
     </div>
 
-
-    <!-- Incluye Hammer.js antes de tu script -->
-    <script src='https://hammerjs.github.io/dist/hammer.min.js'></script>
+    <script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
 
     <script>
         let lastScrollPosition = 0;
-        let hammerInstances = [];
-
+    
         function abrirDetalle(id) {
-            limpiarInstancias(); // Destruye instancias anteriores
             document.querySelectorAll('.detalle').forEach(d => d.classList.remove('activo'));
             
             lastScrollPosition = window.scrollY;
@@ -222,51 +252,45 @@
             detalle.classList.add('activo');
             document.body.style.overflow = 'hidden';
 
-            // Configura Hammer para swipe vertical y horizontal
-            const hammer = new Hammer(detalle);
-            hammer.get('swipe').set({ direction: Hammer.DIRECTION_ALL }); // Detecta todas las direcciones
-
-            // Swipe hacia abajo: Cerrar
-            hammer.on('swipedown', () => cerrarDetalle(id));
-            
-            // Swipe izquierda: Siguiente detalle
-            hammer.on('swipeleft', () => navegarDetalle('siguiente', id));
-            
-            // Swipe derecha: Detalle anterior
-            hammer.on('swiperight', () => navegarDetalle('anterior', id));
-
-            hammerInstances.push(hammer);
+             // Añadir la clase 'detalle-activo' al body para que el fondo se oscurezca
+             document.body.classList.add('detalle-activo');
+    
+            // Agregar detección de swipe left para cerrar usando Hammer.js
+            const hammertime = new Hammer(detalle);
+    
+            // Usamos el evento swipeleft para detectar el gesto de deslizamiento a la izquierda
+            hammertime.on('swiperight', function() {
+                cerrarDetalle(id);
+            });
         }
-
+    
         function navegarDetalle(direccion, currentId) {
             const detalles = Array.from(document.querySelectorAll('.detalle'));
             const currentIndex = detalles.findIndex(d => d.id === currentId);
             let newIndex;
-
+    
             if (direccion === 'siguiente') {
                 newIndex = (currentIndex + 1) % detalles.length; // Circular al inicio
             } else {
                 newIndex = (currentIndex - 1 + detalles.length) % detalles.length; // Circular al final
             }
-
+    
             const newId = detalles[newIndex].id;
-            abrirDetalle(newId); // Abre el nuevo detalle
+            abrirDetalle(newId);
         }
-
+    
         function cerrarDetalle(id) {
             const detalle = document.getElementById(id);
             detalle.classList.remove('activo');
             document.body.style.overflow = '';
-            window.scrollTo({ top: lastScrollPosition, behavior: 'auto' });
-            limpiarInstancias();
-        }
 
-        function limpiarInstancias() {
-            hammerInstances.forEach(instance => instance.destroy());
-            hammerInstances = [];
+            // Eliminar la clase 'detalle-activo' del body para restaurar el fondo
+            document.body.classList.remove('detalle-activo');
+
+            window.scrollTo({ top: lastScrollPosition, behavior: 'auto' });
         }
     </script>
-</body>
-</html>
+    
+
 </body>
 </html>
